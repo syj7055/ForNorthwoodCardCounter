@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Northwood! Utility</title>
     
-    <link rel="icon" type="image/png" href="Leaf.png">
+    <link rel="icon" type="image/png" href="Crown.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,27 +18,21 @@
     <style>
         body { 
             margin: 0; padding: 0; user-select: none; touch-action: manipulation; 
-            /* 전체 폰트 적용 */
             font-family: 'Yanone Kaffeesatz', sans-serif; 
             letter-spacing: 0.05em;
         }
         html { scroll-behavior: smooth; }
-        
-        /* 부드러운 화면 전환 */
         .theme-transition { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* [아이디어 3] 레트로 종이/보드게임 질감 (미세 노이즈) */
         .noise-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 50;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* [아이디어 5] 뉴모피즘(입체감) 그림자 설정 */
+        /* 패널과 헤더 버튼용 뉴모피즘 유지 */
         .neumorphic-light { box-shadow: 8px 8px 16px #d1d5db, -8px -8px 16px #ffffff; }
-        .neumorphic-light-pressed { box-shadow: inset 6px 6px 12px #d1d5db, inset -6px -6px 12px #ffffff; }
         .neumorphic-dark { box-shadow: 6px 6px 14px #0a0b0e, -6px -6px 14px #1a1d26; }
-        .neumorphic-dark-pressed { box-shadow: inset 6px 6px 12px #0a0b0e, inset -6px -6px 12px #1a1d26; }
     </style>
 </head>
 <body>
@@ -54,15 +48,10 @@
 
         function App() {
             const [usedCards, setUsedCards] = React.useState(new Set());
-            // [아이디어 적용] 화이트 모드를 기본값(false)으로 설정
             const [isDark, setIsDark] = React.useState(false);
 
             const toggleCard = (suitId, num) => {
-                // [아이디어 4] 모바일 기기에서 햅틱 피드백(짧은 진동) 제공
-                if (navigator.vibrate) {
-                    navigator.vibrate(15);
-                }
-                
+                if (navigator.vibrate) navigator.vibrate(15);
                 const cardKey = `${suitId}-${num}`;
                 setUsedCards(prev => {
                     const newSet = new Set(prev);
@@ -73,11 +62,10 @@
             };
 
             const reset = () => {
-                if (navigator.vibrate) navigator.vibrate([20, 50, 20]); // 리셋 시 더블 진동
+                if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
                 setUsedCards(new Set());
             };
 
-            // 특정 문양의 남은 카드 개수 계산
             const getUsedCount = (suitId) => {
                 let count = 0;
                 numbers.forEach(num => {
@@ -89,7 +77,6 @@
             return (
                 <div className={`min-h-screen relative overflow-hidden theme-transition ${isDark ? 'bg-[#12141a] text-slate-100' : 'bg-[#e5e7eb] text-slate-700'}`}>
                     
-                    {/* 노이즈 질감 레이어 */}
                     <div className={`noise-bg ${isDark ? 'opacity-[0.04]' : 'opacity-[0.06]'}`}></div>
 
                     <div className="relative z-10 flex flex-col items-center p-5 sm:p-8 max-w-4xl mx-auto min-h-screen">
@@ -130,44 +117,44 @@
                                         className={`p-6 sm:p-8 rounded-[40px] theme-transition
                                             ${isDark ? 'neumorphic-dark bg-[#12141a]' : 'neumorphic-light bg-[#e5e7eb]'}`}
                                     >
-                                        <div className="flex justify-between items-end mb-4">
-                                            <div className="flex items-center gap-4">
-                                                <img src={suit.icon} alt={suit.name} className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-md" />
-                                                <span className="text-3xl sm:text-4xl font-bold uppercase tracking-wider" style={{ color: isDark ? suit.color : '#334155' }}>
-                                                    {suit.name}
-                                                </span>
-                                            </div>
-                                            <span className={`text-2xl font-bold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                                                USED {usedCount}/8
+                                        {/* 문양 타이틀 영역 (USED 글자 제거됨) */}
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <img src={suit.icon} alt={suit.name} className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-md" />
+                                            <span className="text-3xl sm:text-4xl font-bold uppercase tracking-wider" style={{ color: isDark ? suit.color : '#334155' }}>
+                                                {suit.name}
                                             </span>
                                         </div>
 
-                                        {/* [아이디어 2] 직관적인 Progress Bar */}
-                                        <div className={`w-full h-3 rounded-full mb-8 overflow-hidden theme-transition ${isDark ? 'bg-black/40' : 'bg-black/10'}`}>
+                                        {/* Progress Bar (글자 없이 깔끔하게 유지) */}
+                                        <div className={`w-full h-3 rounded-full mb-8 overflow-hidden theme-transition shadow-inner ${isDark ? 'bg-black/40' : 'bg-black/10'}`}>
                                             <div 
                                                 className="h-full theme-transition" 
                                                 style={{ width: `${progressPercentage}%`, backgroundColor: suit.color, opacity: isDark ? 0.8 : 1 }}
                                             ></div>
                                         </div>
                                         
-                                        {/* 4x2 Buttons */}
+                                        {/* 4x2 Buttons (테마 색상 기반 스타일로 롤백) */}
                                         <div className="grid grid-cols-4 gap-4 sm:gap-5">
                                             {numbers.map(num => {
                                                 const isUsed = usedCards.has(`${suit.id}-${num}`);
                                                 
-                                                // 뉴모피즘 팝업/음각 스타일 계산
-                                                const buttonClass = isDark 
-                                                    ? (isUsed ? 'neumorphic-dark-pressed text-slate-700 bg-[#12141a]' : 'neumorphic-dark text-slate-200 bg-[#12141a] hover:-translate-y-1')
-                                                    : (isUsed ? 'neumorphic-light-pressed text-slate-400 bg-[#e5e7eb]' : 'neumorphic-light text-slate-700 bg-[#e5e7eb] hover:-translate-y-1');
+                                                const activeStyle = isDark
+                                                    ? { backgroundColor: `${suit.color}15`, color: suit.color, borderColor: `${suit.color}50`, boxShadow: `0 4px 15px ${suit.color}10` }
+                                                    : { backgroundColor: suit.color, color: '#1e293b', borderColor: 'rgba(0,0,0,0.05)', boxShadow: `0 4px 10px ${suit.color}40` };
+                                                    
+                                                const usedStyle = isDark
+                                                    ? { backgroundColor: 'rgba(0,0,0,0.6)', color: 'rgba(255,255,255,0.08)', borderColor: 'transparent', boxShadow: 'none' }
+                                                    : { backgroundColor: 'rgba(0,0,0,0.04)', color: 'rgba(0,0,0,0.15)', borderColor: 'transparent', boxShadow: 'none' };
 
                                                 return (
                                                     <button
                                                         key={num}
                                                         onClick={() => toggleCard(suit.id, num)}
+                                                        style={isUsed ? usedStyle : activeStyle}
                                                         className={`
-                                                            aspect-[3/4] rounded-2xl text-4xl sm:text-5xl font-bold transition-all duration-300
+                                                            aspect-[3/4] rounded-2xl text-4xl sm:text-5xl font-bold transition-all duration-300 border
                                                             flex items-center justify-center active:scale-95
-                                                            ${buttonClass}
+                                                            ${isUsed ? 'line-through opacity-30 cursor-default' : 'hover:-translate-y-1 hover:brightness-110 shadow-sm'}
                                                         `}
                                                     >
                                                         {num}
