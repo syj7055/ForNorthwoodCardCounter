@@ -6,6 +6,8 @@
     <title>For Northwood! Utility</title>
     
     <link rel="icon" type="image/png" href="Crown.png">
+    <link rel="apple-touch-icon" href="Crown.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,10 +113,10 @@
                     
                     <div className={`noise-bg ${isDark ? 'opacity-[0.04]' : 'opacity-[0.06]'}`}></div>
 
-                    <div className="relative z-10 flex flex-col flex-grow items-center p-2 sm:p-4 lg:p-8 max-w-4xl mx-auto w-full">
+                    <div className="relative z-10 flex flex-col flex-grow items-center justify-center p-2 sm:p-4 lg:p-8 max-w-lg sm:max-w-2xl lg:max-w-4xl mx-auto w-full">
                         
-                        {/* Header */}
-                        <div className={`w-full flex justify-between items-center mb-3 sm:mb-6 lg:mb-10 pb-2 sm:pb-4 lg:pb-6 border-b-2 theme-transition ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+                        {/* Header: 태블릿(sm) 구간의 세로 여백 대폭 축소 */}
+                        <div className={`w-full flex justify-between items-center mb-3 sm:mb-4 lg:mb-10 pb-2 sm:pb-3 lg:pb-6 border-b-2 theme-transition ${isDark ? 'border-white/5' : 'border-black/5'}`}>
                             
                             <h1 className="text-xl sm:text-3xl lg:text-5xl font-bold tracking-wide flex items-center gap-1.5 sm:gap-2 lg:gap-3 leading-none">
                                 <span className={isDark ? "text-emerald-500" : "text-emerald-700"}>🌲</span> 
@@ -134,7 +136,7 @@
                                 
                                 <button 
                                     onClick={reset}
-                                    className={`px-3 sm:px-4 lg:px-8 h-8 sm:h-10 lg:h-12 rounded-lg sm:rounded-xl lg:rounded-2xl text-sm sm:text-xl lg:text-2xl font-bold active:scale-95 theme-transition
+                                    className={`px-3 sm:px-5 lg:px-8 h-8 sm:h-10 lg:h-12 rounded-lg sm:rounded-xl lg:rounded-2xl text-sm sm:text-xl lg:text-2xl font-bold active:scale-95 theme-transition
                                         ${isDark ? 'neumorphic-dark text-rose-400' : 'neumorphic-light text-rose-600'}`}
                                 >
                                     Reset
@@ -142,8 +144,8 @@
                             </div>
                         </div>
 
-                        {/* Card Grids - 무조건 2x2 고정 (grid-cols-2) */}
-                        <div className="w-full grid grid-cols-2 gap-2 sm:gap-5 lg:gap-10">
+                        {/* Card Grids: 태블릿(sm) 구간의 그리드 갭 축소 */}
+                        <div className="w-full grid grid-cols-2 gap-2 sm:gap-3 lg:gap-8">
                             {suits.map(suit => {
                                 const usedCount = getUsedCount(suit.id);
                                 const progressPercentage = (usedCount / 8) * 100;
@@ -152,17 +154,18 @@
                                 const tintColor = suit.color;
                                 const progressBarColor = suit.id === 'claw' ? (isDark ? '#a3a3a3' : '#B3B3B3') : suit.color;
 
-                                const bgAlpha = isDark ? 0.25 : 0.4;  
+                                const bgAlpha = isDark ? 0.25 : 0.35;  
                                 const borderAlpha = isDark ? 0.7 : 0.9;
 
                                 return (
+                                    // 카드 패딩 축소
                                     <div 
                                         key={suit.id} 
-                                        className={`relative p-2.5 sm:p-5 lg:p-8 rounded-[16px] sm:rounded-[30px] lg:rounded-[40px] theme-transition
+                                        className={`relative p-2.5 sm:p-4 lg:p-8 rounded-[16px] sm:rounded-[24px] lg:rounded-[40px] theme-transition
                                             ${isDark ? 'neumorphic-dark bg-[#12141a]' : 'neumorphic-light bg-[#e5e7eb]'}`}
                                     >
                                         <div 
-                                            className={`absolute inset-0 rounded-[16px] sm:rounded-[30px] lg:rounded-[40px] pointer-events-none transition-all duration-500`}
+                                            className={`absolute inset-0 rounded-[16px] sm:rounded-[24px] lg:rounded-[40px] pointer-events-none transition-all duration-500`}
                                             style={{
                                                 backgroundColor: isTrump ? hexToRgba(tintColor, bgAlpha) : 'transparent',
                                                 border: isTrump ? `9px solid ${hexToRgba(tintColor, borderAlpha)}` : '9px solid transparent',
@@ -170,23 +173,23 @@
                                         ></div>
 
                                         <div 
-                                            className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4 lg:mb-6 cursor-pointer group w-max relative z-10"
+                                            className="flex items-center gap-1.5 sm:gap-2.5 lg:gap-6 mb-2 sm:mb-3 lg:mb-6 cursor-pointer group w-max relative z-10"
                                             onClick={() => toggleTrump(suit.id)}
                                         >
-                                            <img src={suit.icon} alt={suit.name} className="w-5 h-5 sm:w-8 sm:h-8 lg:w-14 lg:h-14 object-contain drop-shadow-md group-hover:scale-110 transition-transform" />
-                                            <span className="text-base sm:text-3xl lg:text-4xl font-bold tracking-wider relative top-[1px] lg:top-[2px] transition-colors" style={{ color: isDark ? suit.color : '#334155' }}>
+                                            <img src={suit.icon} alt={suit.name} className="w-5 h-5 sm:w-7 sm:h-7 lg:w-14 lg:h-14 object-contain drop-shadow-md group-hover:scale-110 transition-transform" />
+                                            <span className="text-base sm:text-2xl lg:text-4xl font-bold tracking-wider relative top-[1px] lg:top-[2px] transition-colors" style={{ color: isDark ? suit.color : '#334155' }}>
                                                 {suit.name}
                                             </span>
                                         </div>
 
-                                        <div className={`relative w-full h-1.5 sm:h-2.5 lg:h-3 rounded-full mb-3 sm:mb-6 lg:mb-8 theme-transition ${isDark ? 'progress-track-dark bg-[#1a1d26]' : 'progress-track-light bg-[#d1d5db]'}`}>
+                                        <div className={`relative w-full h-1.5 sm:h-2 lg:h-3 rounded-full mb-3 sm:mb-4 lg:mb-8 theme-transition ${isDark ? 'progress-track-dark bg-[#1a1d26]' : 'progress-track-light bg-[#d1d5db]'}`}>
                                             <div 
                                                 className={`absolute left-0 top-0 h-full rounded-full theme-transition ${isDark ? 'progress-fill-dark' : 'progress-fill-light'}`} 
                                                 style={{ width: `${progressPercentage}%`, backgroundColor: progressBarColor, opacity: isDark ? 0.9 : 1 }}
                                             ></div>
                                         </div>
                                         
-                                        <div className="grid grid-cols-4 gap-1 sm:gap-3 lg:gap-5 relative z-10">
+                                        <div className="grid grid-cols-4 gap-1 sm:gap-2 lg:gap-5 relative z-10">
                                             {numbers.map(num => {
                                                 const isUsed = usedCards.has(`${suit.id}-${num}`);
                                                 
@@ -204,7 +207,8 @@
                                                         onClick={(e) => toggleCard(e, suit.id, num)}
                                                         style={isUsed ? usedStyle : activeStyle}
                                                         className={`
-                                                            aspect-[3/4] rounded-md sm:rounded-xl lg:rounded-2xl text-lg sm:text-3xl lg:text-5xl font-bold transition-all duration-300 border
+                                                            /* 💡 태블릿(sm)에서 버튼이 지나치게 길어지는 것을 방지하기 위해 aspect비율 완화 */
+                                                            aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] rounded-md sm:rounded-lg lg:rounded-2xl text-lg sm:text-2xl lg:text-5xl font-bold transition-all duration-300 border
                                                             flex items-center justify-center active:scale-95
                                                             ${isUsed ? 'line-through opacity-30 cursor-default' : 'can-hover shadow-sm'}
                                                         `}
@@ -220,11 +224,11 @@
                         </div>
                         
                         {/* 💡 전체 카드 카운터 */}
-                        <div className="w-full flex justify-center mt-4 sm:mt-8 lg:mt-12">
-                            <div className={`px-3 py-1.5 sm:px-6 sm:py-2 lg:px-8 lg:py-3 rounded-full font-bold tracking-widest text-[10px] sm:text-sm lg:text-lg flex items-center gap-1.5 sm:gap-3 theme-transition
+                        <div className="w-full flex justify-center mt-4 sm:mt-6 lg:mt-12">
+                            <div className={`px-3 py-1.5 sm:px-5 sm:py-2 lg:px-8 lg:py-3 rounded-full font-bold tracking-widest text-[10px] sm:text-sm lg:text-lg flex items-center gap-1.5 sm:gap-2.5 theme-transition
                                 ${isDark ? 'bg-[#1a1d26] text-slate-400 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.02)]' 
                                             : 'bg-[#e5e7eb] text-slate-500 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]'}`}>
-                                <span className={`w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full ${isDark ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-emerald-600'}`}></span>
+                                <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 lg:w-2.5 lg:h-2.5 rounded-full ${isDark ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-emerald-600'}`}></span>
                                 {totalUsed} / 32 CARDS PLAYED
                             </div>
                         </div>
@@ -232,8 +236,8 @@
                     </div>
 
                     {/* Footer 헌정 문구 */}
-                    <div className="w-full mt-auto flex flex-col items-center justify-end pb-4 sm:pb-8 lg:pb-12 pt-2">
-                        <div className={`text-center text-[10px] sm:text-base lg:text-xl tracking-[0.15em] font-semibold theme-transition ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
+                    <div className="w-full mt-auto flex flex-col items-center justify-end pb-4 sm:pb-6 lg:pb-12 pt-2">
+                        <div className={`text-center text-[10px] sm:text-sm lg:text-xl tracking-[0.15em] font-semibold theme-transition ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
                             Dedicated to Jihyeon, the Queen of Northwood.
                         </div>
                     </div>
