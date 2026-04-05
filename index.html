@@ -5,34 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Northwood! Utility</title>
     
-    <link rel="icon" type="image/png" href="Crown.png">
+    <link rel="icon" type="image/png" href="Leaf.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@400;600;700&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { margin: 0; padding: 0; user-select: none; touch-action: manipulation; font-family: system-ui, -apple-system, sans-serif; }
+        body { 
+            margin: 0; padding: 0; user-select: none; touch-action: manipulation; 
+            /* 전체 폰트 적용 */
+            font-family: 'Yanone Kaffeesatz', sans-serif; 
+            letter-spacing: 0.05em;
+        }
         html { scroll-behavior: smooth; }
-        .glass-transition { transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease; }
+        
+        /* 부드러운 화면 전환 */
+        .theme-transition { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* [아이디어 3] 레트로 종이/보드게임 질감 (미세 노이즈) */
+        .noise-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 50;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* [아이디어 5] 뉴모피즘(입체감) 그림자 설정 */
+        .neumorphic-light { box-shadow: 8px 8px 16px #d1d5db, -8px -8px 16px #ffffff; }
+        .neumorphic-light-pressed { box-shadow: inset 6px 6px 12px #d1d5db, inset -6px -6px 12px #ffffff; }
+        .neumorphic-dark { box-shadow: 6px 6px 14px #0a0b0e, -6px -6px 14px #1a1d26; }
+        .neumorphic-dark-pressed { box-shadow: inset 6px 6px 12px #0a0b0e, inset -6px -6px 12px #1a1d26; }
     </style>
 </head>
 <body>
     <div id="root"></div>
     <script type="text/babel">
         const suits = [
-            { id: 'claw', name: 'Claw', icon: 'Claw.png', color: '#E2E2E2' },
-            { id: 'flower', name: 'Flower', icon: 'Flower.png', color: '#FAD9D8' },
-            { id: 'eye', name: 'Eye', icon: 'Eye.png', color: '#D1ECF3' },
-            { id: 'leaf', name: 'Leaf', icon: 'Leaf.png', color: '#FEEFCE' }
+            { id: 'claw', name: 'Claws', icon: 'Claw.png', color: '#E2E2E2' },
+            { id: 'flower', name: 'Flowers', icon: 'Flower.png', color: '#FAD9D8' },
+            { id: 'eye', name: 'Eyes', icon: 'Eye.png', color: '#D1ECF3' },
+            { id: 'leaf', name: 'Leaves', icon: 'Leaf.png', color: '#FEEFCE' }
         ];
         const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
 
         function App() {
             const [usedCards, setUsedCards] = React.useState(new Set());
-            const [isDark, setIsDark] = React.useState(true);
+            // [아이디어 적용] 화이트 모드를 기본값(false)으로 설정
+            const [isDark, setIsDark] = React.useState(false);
 
             const toggleCard = (suitId, num) => {
+                // [아이디어 4] 모바일 기기에서 햅틱 피드백(짧은 진동) 제공
+                if (navigator.vibrate) {
+                    navigator.vibrate(15);
+                }
+                
                 const cardKey = `${suitId}-${num}`;
                 setUsedCards(prev => {
                     const newSet = new Set(prev);
@@ -43,97 +73,116 @@
             };
 
             const reset = () => {
+                if (navigator.vibrate) navigator.vibrate([20, 50, 20]); // 리셋 시 더블 진동
                 setUsedCards(new Set());
             };
 
-            return (
-                <div className={`min-h-screen relative overflow-hidden transition-colors duration-700 ${isDark ? 'bg-[#0f1115] text-slate-100' : 'bg-[#f8fafc] text-slate-800'}`}>
-                    
-                    {/* 차분한 흑백 톤의 배경 그라데이션 오라 */}
-                    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                        <div className={`absolute top-[-20%] left-[-10%] w-[70%] h-[70%] rounded-full blur-[140px] transition-all duration-1000 ${isDark ? 'bg-white/[0.04]' : 'bg-black/[0.04]'}`}></div>
-                        <div className={`absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] rounded-full blur-[140px] transition-all duration-1000 ${isDark ? 'bg-slate-500/[0.05]' : 'bg-slate-400/[0.08]'}`}></div>
-                    </div>
+            // 특정 문양의 남은 카드 개수 계산
+            const getUsedCount = (suitId) => {
+                let count = 0;
+                numbers.forEach(num => {
+                    if (usedCards.has(`${suitId}-${num}`)) count++;
+                });
+                return count;
+            };
 
-                    <div className="relative z-10 flex flex-col items-center p-4 sm:p-6 max-w-3xl mx-auto min-h-screen">
+            return (
+                <div className={`min-h-screen relative overflow-hidden theme-transition ${isDark ? 'bg-[#12141a] text-slate-100' : 'bg-[#e5e7eb] text-slate-700'}`}>
+                    
+                    {/* 노이즈 질감 레이어 */}
+                    <div className={`noise-bg ${isDark ? 'opacity-[0.04]' : 'opacity-[0.06]'}`}></div>
+
+                    <div className="relative z-10 flex flex-col items-center p-5 sm:p-8 max-w-4xl mx-auto min-h-screen">
                         
-                        {/* Header Area */}
-                        <div className={`w-full flex justify-between items-center mb-8 mt-2 pb-4 border-b ${isDark ? 'border-white/10' : 'border-black/10'} glass-transition`}>
-                            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tighter flex items-center gap-2">
-                                <span className="text-slate-400 drop-shadow-md">🌲</span> 
-                                For Northwood!
+                        {/* Header */}
+                        <div className={`w-full flex justify-between items-center mb-10 pb-6 border-b-2 theme-transition ${isDark ? 'border-white/5' : 'border-black/5'}`}>
+                            <h1 className="text-4xl sm:text-5xl font-bold tracking-wide flex items-center gap-3">
+                                <span className={isDark ? "text-emerald-500" : "text-emerald-700"}>🌲</span> 
+                                FOR NORTHWOOD!
                             </h1>
-                            <div className="flex gap-3">
+                            <div className="flex gap-4">
                                 <button 
                                     onClick={() => setIsDark(!isDark)}
-                                    className={`p-2.5 rounded-xl font-bold transition-all shadow-lg active:scale-95 border backdrop-blur-md flex items-center justify-center
-                                        ${isDark ? 'bg-white/5 hover:bg-white/10 border-white/10 text-yellow-300' : 'bg-white/80 hover:bg-white border-black/10 text-indigo-500'}`}
+                                    className={`w-12 h-12 rounded-2xl text-2xl flex items-center justify-center active:scale-90 theme-transition
+                                        ${isDark ? 'neumorphic-dark text-yellow-400' : 'neumorphic-light text-indigo-500'}`}
                                 >
                                     {isDark ? '☀️' : '🌙'}
                                 </button>
                                 <button 
                                     onClick={reset} 
-                                    className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg active:scale-95 border backdrop-blur-md
-                                        ${isDark ? 'bg-slate-800/80 hover:bg-slate-700 border-white/10 text-slate-300' : 'bg-slate-200 hover:bg-slate-300 border-black/10 text-slate-700'}`}
+                                    className={`px-8 h-12 rounded-2xl text-2xl font-bold active:scale-90 theme-transition
+                                        ${isDark ? 'neumorphic-dark text-rose-400' : 'neumorphic-light text-rose-600'}`}
                                 >
                                     RESET
                                 </button>
                             </div>
                         </div>
 
-                        {/* Card Grids (2x2 Layout) */}
-                        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                            {suits.map(suit => (
-                                <div 
-                                    key={suit.id} 
-                                    className={`relative overflow-hidden p-5 sm:p-6 rounded-[32px] border backdrop-blur-2xl shadow-xl glass-transition
-                                        ${isDark ? 'bg-[#181a20]/80 border-white/10' : 'bg-white border-slate-200'}`}
-                                >
-                                    <div className="flex items-center gap-3 mb-5 relative z-10">
-                                        <img src={suit.icon} alt={suit.name} className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-sm" />
-                                        <span className={`text-xl sm:text-2xl font-black tracking-tight`} style={{ color: isDark ? suit.color : '#1e293b' }}>
-                                            {suit.name.toUpperCase()}
-                                        </span>
-                                    </div>
-                                    
-                                    {/* 4x2 버튼 그리드 */}
-                                    <div className="grid grid-cols-4 gap-2 sm:gap-3 relative z-10">
-                                        {numbers.map(num => {
-                                            const isUsed = usedCards.has(`${suit.id}-${num}`);
-                                            
-                                            // [시인성 개선] 사용하지 않은 카드 (눈에 확 띄게)
-                                            const activeStyle = isDark
-                                                ? { backgroundColor: `${suit.color}15`, color: suit.color, borderColor: `${suit.color}50`, boxShadow: `0 4px 15px ${suit.color}10` }
-                                                : { backgroundColor: suit.color, color: '#0f172a', borderColor: 'rgba(0,0,0,0.05)', boxShadow: `0 4px 10px ${suit.color}40` };
-                                                
-                                            // [시인성 개선] 사용한 카드 (배경과 동화되어 완전히 죽어보이게)
-                                            const usedStyle = isDark
-                                                ? { backgroundColor: 'rgba(0,0,0,0.6)', color: 'rgba(255,255,255,0.08)', borderColor: 'transparent', boxShadow: 'none' }
-                                                : { backgroundColor: 'rgba(0,0,0,0.04)', color: 'rgba(0,0,0,0.15)', borderColor: 'transparent', boxShadow: 'none' };
+                        {/* Card Grids */}
+                        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10">
+                            {suits.map(suit => {
+                                const usedCount = getUsedCount(suit.id);
+                                const progressPercentage = (usedCount / 8) * 100;
 
-                                            return (
-                                                <button
-                                                    key={num}
-                                                    onClick={() => toggleCard(suit.id, num)}
-                                                    style={isUsed ? usedStyle : activeStyle}
-                                                    className={`
-                                                        aspect-[3/4] rounded-[1rem] text-xl sm:text-2xl font-black transition-all duration-300 border backdrop-blur-sm
-                                                        flex items-center justify-center active:scale-90
-                                                        ${isUsed ? 'line-through opacity-30 cursor-default' : 'hover:-translate-y-1 hover:brightness-110 shadow-sm'}
-                                                    `}
-                                                >
-                                                    {num}
-                                                </button>
-                                            );
-                                        })}
+                                return (
+                                    <div 
+                                        key={suit.id} 
+                                        className={`p-6 sm:p-8 rounded-[40px] theme-transition
+                                            ${isDark ? 'neumorphic-dark bg-[#12141a]' : 'neumorphic-light bg-[#e5e7eb]'}`}
+                                    >
+                                        <div className="flex justify-between items-end mb-4">
+                                            <div className="flex items-center gap-4">
+                                                <img src={suit.icon} alt={suit.name} className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-md" />
+                                                <span className="text-3xl sm:text-4xl font-bold uppercase tracking-wider" style={{ color: isDark ? suit.color : '#334155' }}>
+                                                    {suit.name}
+                                                </span>
+                                            </div>
+                                            <span className={`text-2xl font-bold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                                                USED {usedCount}/8
+                                            </span>
+                                        </div>
+
+                                        {/* [아이디어 2] 직관적인 Progress Bar */}
+                                        <div className={`w-full h-3 rounded-full mb-8 overflow-hidden theme-transition ${isDark ? 'bg-black/40' : 'bg-black/10'}`}>
+                                            <div 
+                                                className="h-full theme-transition" 
+                                                style={{ width: `${progressPercentage}%`, backgroundColor: suit.color, opacity: isDark ? 0.8 : 1 }}
+                                            ></div>
+                                        </div>
+                                        
+                                        {/* 4x2 Buttons */}
+                                        <div className="grid grid-cols-4 gap-4 sm:gap-5">
+                                            {numbers.map(num => {
+                                                const isUsed = usedCards.has(`${suit.id}-${num}`);
+                                                
+                                                // 뉴모피즘 팝업/음각 스타일 계산
+                                                const buttonClass = isDark 
+                                                    ? (isUsed ? 'neumorphic-dark-pressed text-slate-700 bg-[#12141a]' : 'neumorphic-dark text-slate-200 bg-[#12141a] hover:-translate-y-1')
+                                                    : (isUsed ? 'neumorphic-light-pressed text-slate-400 bg-[#e5e7eb]' : 'neumorphic-light text-slate-700 bg-[#e5e7eb] hover:-translate-y-1');
+
+                                                return (
+                                                    <button
+                                                        key={num}
+                                                        onClick={() => toggleCard(suit.id, num)}
+                                                        className={`
+                                                            aspect-[3/4] rounded-2xl text-4xl sm:text-5xl font-bold transition-all duration-300
+                                                            flex items-center justify-center active:scale-95
+                                                            ${buttonClass}
+                                                        `}
+                                                    >
+                                                        {num}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
 
                         {/* Footer */}
-                        <div className={`mt-auto pt-12 pb-6 text-center text-xs tracking-widest uppercase font-semibold glass-transition ${isDark ? 'text-slate-700' : 'text-slate-300'}`}>
-                            Dedicated to Youngjun & Jihyun
+                        <div className={`mt-auto pt-20 pb-8 text-center text-xl tracking-[0.2em] font-semibold theme-transition ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
+                            DEDICATED TO YOUNGJUN & JIHYEON
                         </div>
                     </div>
                 </div>
