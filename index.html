@@ -1,84 +1,92 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>북쪽숲 카운터</title>
+    <title>For Northwood! Utility</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0f172a; color: white; user-select: none; touch-action: manipulation; }
+        body { background-color: #0c0e12; color: #f1f5f9; user-select: none; touch-action: manipulation; font-family: system-ui, -apple-system, sans-serif; }
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        // 4가지 문양 세팅
         const suits = [
-            { id: 'claws', name: '🐾 발톱', color: 'text-amber-500', bg: 'bg-amber-500/20' },
-            { id: 'leaves', name: '🌿 나뭇잎', color: 'text-emerald-500', bg: 'bg-emerald-500/20' },
-            { id: 'eyes', name: '👁️ 눈', color: 'text-blue-500', bg: 'bg-blue-500/20' },
-            { id: 'horns', name: '🦌 뿔', color: 'text-rose-500', bg: 'bg-rose-500/20' }
+            { id: 'claw', name: 'Claw', icon: 'Claw.png', color: '#E2E2E2' },
+            { id: 'flower', name: 'Flower', icon: 'Flower.png', color: '#FAD9D8' },
+            { id: 'eye', name: 'Eye', icon: 'Eye.png', color: '#D1ECF3' },
+            { id: 'leaf', name: 'Leaf', icon: 'Leaf.png', color: '#FEEFCE' }
         ];
         const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
 
         function App() {
-            // 사용한 카드를 기억하는 상태 공간
             const [usedCards, setUsedCards] = React.useState(new Set());
 
-            // 카드 클릭 시 (사용/취소 토글)
             const toggleCard = (suitId, num) => {
                 const cardKey = `${suitId}-${num}`;
                 setUsedCards(prev => {
                     const newSet = new Set(prev);
                     if (newSet.has(cardKey)) {
-                        newSet.delete(cardKey); // 이미 쓴 카드면 취소 (실수 방지)
+                        newSet.delete(cardKey);
                     } else {
-                        newSet.add(cardKey); // 안 쓴 카드면 사용 처리
+                        newSet.add(cardKey);
                     }
                     return newSet;
                 });
             };
 
-            // 새 게임 시작 시 초기화
+            // Removed confirm dialog as requested
             const reset = () => {
-                if(confirm("새 게임을 시작하시겠습니까? 모든 카운팅이 초기화됩니다.")) {
-                    setUsedCards(new Set());
-                }
+                setUsedCards(new Set());
             };
 
             return (
-                <div className="min-h-screen flex flex-col items-center p-4 max-w-md mx-auto">
-                    <div className="w-full flex justify-between items-center mb-6 mt-2">
-                        <h1 className="text-2xl font-bold text-slate-100 drop-shadow-md">🌲 For Northwood!</h1>
+                <div className="min-h-screen flex flex-col items-center p-5 max-w-lg mx-auto">
+                    {/* Header Area */}
+                    <div className="w-full flex justify-between items-center mb-10 mt-4 pb-4 border-b border-slate-800">
+                        <h1 className="text-3xl font-extrabold text-slate-100 tracking-tighter">
+                           <span className="text-emerald-500">🌲</span> For Northwood!
+                        </h1>
                         <button 
                             onClick={reset} 
-                            className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-bold transition-colors shadow-md active:scale-95"
+                            className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-bold transition-all shadow-lg active:scale-95 border border-slate-700"
                         >
-                            초기화
+                            RESET
                         </button>
                     </div>
 
-                    <div className="w-full flex flex-col gap-5">
+                    {/* Card Grids */}
+                    <div className="w-full flex flex-col gap-8">
                         {suits.map(suit => (
-                            <div key={suit.id} className="bg-slate-800 p-4 rounded-3xl border border-slate-700 shadow-xl">
-                                <div className={`font-bold mb-3 ${suit.color} text-lg`}>
-                                    {suit.name}
+                            <div key={suit.id} className="bg-slate-900 p-6 rounded-[32px] border border-slate-800 shadow-2xl relative overflow-hidden">
+                                <img src={suit.icon} alt="" className="absolute -right-5 -bottom-5 w-32 h-32 opacity-[0.03] pointer-events-none" />
+
+                                <div className="flex items-center gap-3.5 mb-5 relative z-10">
+                                    <img src={suit.icon} alt={suit.name} className="w-9 h-9 object-contain" />
+                                    <span className="text-2xl font-black tracking-tight" style={{ color: suit.color }}>
+                                        {suit.name.toUpperCase()}
+                                    </span>
                                 </div>
-                                <div className="grid grid-cols-4 gap-3">
+                                
+                                <div className="grid grid-cols-4 gap-4 relative z-10">
                                     {numbers.map(num => {
                                         const isUsed = usedCards.has(`${suit.id}-${num}`);
                                         return (
                                             <button
                                                 key={num}
                                                 onClick={() => toggleCard(suit.id, num)}
+                                                style={isUsed ? {} : { color: suit.color, borderColor: `${suit.color}30` }}
                                                 className={`
-                                                    py-3 rounded-2xl text-xl font-black transition-all
+                                                    aspect-[3/4] rounded-2xl text-3xl font-black transition-all duration-150 ease-out border-2
+                                                    flex items-center justify-center shadow-md active:scale-90
                                                     ${isUsed 
-                                                        ? 'bg-slate-900 text-slate-700 shadow-inner' 
-                                                        : `${suit.bg} ${suit.color} hover:brightness-110 shadow-lg active:scale-90 border border-white/5`}
+                                                        ? 'bg-[#060606] text-slate-600 line-through border-slate-900 opacity-60 shadow-inner' 
+                                                        : 'bg-slate-950 hover:brightness-125 hover:border-white/20 hover:-translate-y-0.5'}
                                                 `}
                                             >
                                                 {num}
@@ -88,6 +96,11 @@
                                 </div>
                             </div>
                         ))}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-16 mb-6 text-center text-slate-600 text-xs tracking-widest uppercase">
+                        Dedicated to Youngjun & Jihyeon
                     </div>
                 </div>
             );
