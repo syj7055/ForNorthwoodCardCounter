@@ -98,6 +98,8 @@
                 if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
                 e.currentTarget.blur();
                 setUsedCards(new Set());
+                // 💡 [수정] 리셋 시 으뜸패 표시 초기화
+                setTrumpSuit(null);
             };
 
             const getUsedCount = (suitId) => {
@@ -118,7 +120,8 @@
                         {/* Header */}
                         <div className={`w-full flex justify-between items-center mb-3 sm:mb-5 xl:mb-10 pb-2 sm:pb-3 xl:pb-6 border-b-2 theme-transition ${isDark ? 'border-white/5' : 'border-black/5'}`}>
                             
-                            <h1 className="text-[1.15rem] sm:text-3xl xl:text-4xl font-bold tracking-wide flex items-center gap-1.5 sm:gap-2 xl:gap-3 leading-none">
+                            {/* 💡 [수정] 모바일 글자색 전환 딜레이 방지를 위해 h1 태그에 theme-transition 명시적 추가 */}
+                            <h1 className="theme-transition text-[1.15rem] sm:text-3xl xl:text-4xl font-bold tracking-wide flex items-center gap-1.5 sm:gap-2 xl:gap-3 leading-none">
                                 For Northwood!
                             </h1>
 
